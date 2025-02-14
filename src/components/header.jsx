@@ -21,7 +21,7 @@ const Header = function ({ user }) {
           <img
             src={user?.profileImg}
             alt={`${user?.fName} ${user?.lName || ""}`}
-            className="w-8 h-8 rounded-[50%] border-2 border-btn-blue bg-cover"
+            className="w-10 h-10 rounded-[50%] border-2 border-btn-blue bg-cover"
           />
           <p className="font-medium">
             {user?.fName}{" "}
@@ -32,7 +32,7 @@ const Header = function ({ user }) {
         <img
           src="/assets/images/p%20notas.png"
           alt="P. Notas"
-          className={window.innerWidth > 600 ? "h-[140%] bg-cover" : "h-[100%] bg-cover"}
+          className="h-[50%]"
         />
 
         {NavBar({addIcon, settingsIcon})}
