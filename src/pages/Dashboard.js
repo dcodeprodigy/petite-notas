@@ -38,15 +38,25 @@ const Dashboard = () => {
               "__v": 0
           }
       ]
-
+    
   useEffect(
     () => {
+    //   let response;
+    //   // Get logged in user data
+    //   try {
+    //     console.log("Getting notes");
+    //     response = JSON.parse(await axios.get("/api/profile"));
+    //     if (response.status === 200) {
+    //       console.log(response.data);
+    //     }
+    //   } catch (error) {
+    //     throw error
+    //   }
+
       document.title = `${user?.fName || ""}${
-        user?.fName.endsWith("s") ? "'" : "'s"
+        user.fName.endsWith("s") ? "'" : "'s"
       } Dashboard - P. Notas`;
-    },
-    []
-  );
+    }, []);
 
   return (
     <>
