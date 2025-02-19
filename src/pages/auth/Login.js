@@ -39,9 +39,12 @@ const Login = () => {
 
   const navigate = useNavigate();
   const { identifier, password } = formData;
+
   const onChange = (e) => {
-    if (e.target.name === "identifier") {
-      if (e.target.value.length > 0 ) {
+    const { name, value } = e.target;
+    
+    if (name === "identifier") {
+      if (value.length > 0 ) {
         setNotValidated({
           ...notValidated,
           identifier: null,
@@ -55,8 +58,8 @@ const Login = () => {
         })
       }
 
-    } else if (e.target.name === "password") {
-      if (e.target.value.length > 0) {
+    } else if (name === "password") {
+      if (value.length > 0) {
         setNotValidated({
           ...notValidated,
           password: null,
@@ -67,20 +70,8 @@ const Login = () => {
     
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
-  };
-
-  const disableFields = async (bool) => {
-    idRef.current.disabled = bool;
-    passRef.current.disabled = bool;
-    if (bool) {
-      loginBtn.current.disabled = bool;
-      setIsLoading(bool);
-    } else {
-      setIsLoading(bool);
-      loginBtn.current.disabled = bool;
-    }
   };
 
   const onSubmit = async (e) => {
@@ -132,7 +123,7 @@ const Login = () => {
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
-          pauseOnHover: true,
+          pauseOnHover: false,
           draggable: true,
           progress: undefined,
           theme: "colored",
@@ -154,8 +145,7 @@ const Login = () => {
     }
 
     try {
-      await disableFields(true);
-
+      setIsLoading(true);
       const res = await axios.post(
         `${process.env.REACT_APP_URL}/api/auth/login`,
         {
@@ -180,7 +170,7 @@ const Login = () => {
       displayToast(false, "An error occured while logging you in."); // On successful login
       setError(err.response?.data?.msg || "Login failed. Please try again.");
     } finally {
-      disableFields(false);
+      setIsLoading(false);
     }
   };
 
@@ -229,7 +219,7 @@ const Login = () => {
         </div>
 
         <h2 className="py-2 font-medium text-lg">Welcome Back, Chief!</h2>
-        <p className="mb-2 pt-3 pb-3 text-center">
+        <p className="mb-0 pt-3 pb-3 text-center">
           Please enter your email/username and password to login
         </p>
 
@@ -248,6 +238,7 @@ const Login = () => {
               onChange={onChange}
               placeholder=""
               className="peer p-3 border border-p-grey shadow-sm w-[100%] focus:outline-btn-blue focus:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading ? true : false}
             />
             <span ref={idSpanRef} className={styles.spanStyles}>
               Email or Username
@@ -255,7 +246,7 @@ const Login = () => {
           </label>
 
           {notValidated?.identifier && (
-            <div className="text-red-600 text-xs text-left mt-2">
+            <div className="text-red-600 text-xs text-left mt-2 pl-3">
               {notValidated.idMsg}
             </div>
           )}
@@ -271,6 +262,7 @@ const Login = () => {
               onChange={onChange}
               onBlur={handleBlur}
               placeholder=""
+              disabled={isLoading ? true : false}
               className="peer p-3 pr-8 border border-p-grey shadow-sm  focus:outline-btn-blue focus:shadow-none w-[100%] disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <span ref={passSpanRef} className={styles.spanStyles}>
@@ -291,7 +283,7 @@ const Login = () => {
           </label>
 
           {notValidated?.password && (
-            <div className="text-red-500 text-xs text-left mt-2">
+            <div className="text-red-500 text-xs text-left mt-2 pl-3">
               {notValidated.pwdMsg}
             </div>
           )}
@@ -302,6 +294,7 @@ const Login = () => {
             type="submit"
             ref={loginBtn}
             className="p-3 w-[100%] bg-btn-blue text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading ? true : false}
           >
             Login
           </button>
@@ -311,7 +304,12 @@ const Login = () => {
             loading
             loadingPosition="center"
             variant="outlined"
-            sx={{ padding: "1.35rem", borderRadius: "6px" }}
+            sx={{
+              padding: "1.35rem",
+              borderRadius: "6px",
+              opacity: "0.7",
+              backgroundColor: "#8da6ff",
+            }}
           ></Button>
         )}
 
@@ -322,7 +320,7 @@ const Login = () => {
           </Link>
         </span>
         <span className="pt-2">
-          Dumb enough to forget password?{" "}
+          Did someone forget their password?{" "}
           <Link to="/fp" className="font-medium hover:underline">
             Recover
           </Link>
