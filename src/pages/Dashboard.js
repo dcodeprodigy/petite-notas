@@ -14,9 +14,11 @@ const Dashboard = () => {
               "_id": "67a9da22ef355f434f92da02",
               "user": "67a9d9daef355f434f92da00",
               "title": " Project Brief: Key Considerations & Next Steps",
+              
               "content": "This brief provides a high-level overview of the project. Please review it carefully. Key areas requiring particular attention include:Timeline: The proposed timeline is aggressive. We need to confirm resource availability to meet these deadlines.Budget: The budget is preliminary. A more detailed cost breakdown is required before final approval.Stakeholder Alignment: Ensure all listed stakeholders are aware of the project goals and their roles. Gather any initial feedback.Next Steps: The project kickoff meeting is scheduled for [Date] at [Time]. Please come prepared to discuss your initial thoughts and any potential roadblocks. Your input is crucial at this early stage. A list of the required attendes has been attached below. Regards",
               "createdAt": "2025-02-10T10:51:14.684Z",
               "updatedAt": "2025-02-10T10:51:14.684Z",
+              "readTime" : "4 mins",
               "__v": 0
           },
           {
@@ -38,6 +40,23 @@ const Dashboard = () => {
               "__v": 0
           }
       ]
+    const todos = [
+      {
+        id: "65tauinanmornejd",
+        status: false,
+        name: "Buy groceries",
+      },
+      {
+        id: "777uujkekwkwpxcbwp",
+        status: true,
+        name: "Go for Anatomy 201 Practical"
+      },
+      {
+        id: "0912djosnbedbqkkwsn",
+        status: false,
+        name: "Make $200 in April"
+      }
+    ]
     
   useEffect(
     () => {
@@ -62,7 +81,7 @@ const Dashboard = () => {
     <>
     <div className="bg-primary-background min-h-screen py-10 px-10">
       <Header user={user} />
-      <Main notes={notes} />
+      <Main notes={notes} todos={todos} />
     </div>
     </>
   )

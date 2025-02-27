@@ -15,13 +15,13 @@ const Header = function ({ user }) {
 
   return (
     <>
-      <header className="flex flex-row-reverse sm:flex-row justify-between w-[95%] h-16 items-center bg-white rounded-xl px-5 max-w-[100%] m-auto text-base">
+      <header className="flex flex-row-reverse sm:flex-row justify-between max-w-[85%] h-16 items-center bg-white rounded-xl px-5  m-auto text-base">
 
         <div className="flex flex-row justify-between items-center gap-2">
           <img
             src={user?.profileImg}
             alt={`${user?.fName} ${user?.lName || ""}`}
-            className="w-10 h-10 rounded-[50%] border-2 border-btn-blue bg-cover"
+            className="max-w-10 max-h-10 rounded-[50%] border-2 border-btn-blue bg-cover flex-shrink"
           />
           <p className="font-medium">
             {user?.fName}{" "}
@@ -32,7 +32,7 @@ const Header = function ({ user }) {
         <img
           src="/assets/images/p%20notas.png"
           alt="P. Notas"
-          className="h-[50%]"
+          className="max-h-[50%] max-w-[50%] flex-shrink"
         />
 
         {NavBar({addIcon, settingsIcon})}

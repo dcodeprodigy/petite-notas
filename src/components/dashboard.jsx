@@ -1,11 +1,13 @@
 import React, {useEffect} from "react";
-import AllNotes from "../components/allnotes";
+import DisplayNote from "./displaynote";
+import NotesList from "./noteslist";
 
 
-const mainDashboard = function (notes) {
+const mainDashboard = function ({ notes }) {
     return (
-        <main className="w-[95%] py-5 m-auto flex sm:flex-col">
-            <AllNotes notes={notes} />
+        <main className="pt-10 m-auto grid grid-cols-1 gap-4 md:grid-cols-2 max-w-[85%]">
+            <NotesList notes={notes}/>
+            <DisplayNote notes={notes} />
         </main>
     )
 }

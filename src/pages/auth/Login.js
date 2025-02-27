@@ -122,7 +122,7 @@ const Login = () => {
           position: "bottom-center",
           autoClose: 5000,
           hideProgressBar: false,
-          closeOnClick: true,
+          closeOnClick: false,
           pauseOnHover: false,
           draggable: true,
           progress: undefined,
@@ -134,7 +134,7 @@ const Login = () => {
           position: "bottom-center",
           autoClose: 5000,
           hideProgressBar: false,
-          closeOnClick: true,
+          closeOnClick: false,
           pauseOnHover: false,
           draggable: true,
           progress: undefined,
@@ -158,7 +158,7 @@ const Login = () => {
         displayToast(true, "Authentication Successful"); // On successful login
         const token = res.data.token;
         localStorage.setItem("token", token);
-        navigate("/dashboard");
+        navigate();
       } else {
         displayToast(
           false,

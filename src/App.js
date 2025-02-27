@@ -8,6 +8,7 @@ import {
 import Dashboard from "./pages/Dashboard.js";
 import Login from "./pages/auth/Login.js";
 import Register from "./pages/auth/Register.js";
+import NotFound from "./pages/NotFound.js";
 
 function App() {
   const isAuth = localStorage.getItem('token') ? true : false;
@@ -15,14 +16,12 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={isAuth ? <Navigate to="/dashboard" /> : <Navigate to="/login" />}></Route>
-        <Route path="/login" element={<Login />}></Route>
-        <Route path="/register" element={isAuth? <Navigate to="/dashboard" /> : <Register /> }></Route>
-        <Route path="/dashboard" element={isAuth ? <Dashboard /> : <Navigate to="/login" />}></Route>
-
-        {/* <Route path="/404.js" element={<NotFound />}></Route>
-        <Route path="*" element={<Navigate to="/404.js"/>}></Route> */}
-
+        <Route path="/" element={isAuth ? <Navigate to="/dashboard" /> : <Navigate to="/login" /> }></Route>
+        <Route path="/login" element={isAuth ? <Navigate to="/dashboard" /> : <Login /> }></Route>
+        <Route path="/register" element={isAuth ? <Navigate to="/dashboard" /> : <Register /> }></Route>
+        <Route path="/dashboard" element={isAuth ? <Dashboard /> : <Navigate to="/login" /> }></Route>
+        <Route path="/NotFound" element={<NotFound />}></Route>
+        <Route path="*" element={ <Navigate to="/NotFound"/> }></Route>
       </Routes>
     </Router>
   );
