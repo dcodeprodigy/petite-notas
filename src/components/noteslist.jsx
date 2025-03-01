@@ -12,21 +12,24 @@ const NotesAsList = function ({ notes, displayNote, setDisplayNote }) {
   const baseThumbnailDivStyle =
     "flex flex-1 justify-center items-center rounded-[18px]";
   const [clicked, setClicked] = useState({});
+  const [isHovered, setIsHovered] = useState({});
 
-  const setNote = async ({e, id}) => {
+  
+
+  const setNote = async ({ e, id }) => {
     // Open or CLose the Note
     const element = e.target;
     console.log(id, element.className);
-    
+
     setClicked((prevState) => {
       const newClicked = { ...prevState };
-      Object.keys(newClicked).forEach(key => {
+      Object.keys(newClicked).forEach((key) => {
         if (key !== id) newClicked[key] = false; // Set all others to false
-      })
+      });
       newClicked[id] = !prevState[id]; // Toggle value of clicked one
 
       return newClicked;
-    })
+    });
 
     /* 
     Get the element and style it accordingly
@@ -34,9 +37,7 @@ const NotesAsList = function ({ notes, displayNote, setDisplayNote }) {
     2. Open if Closed
     3. Close if Open
     */
-  }
-
-  
+  };
 
   return (
     <>
@@ -46,51 +47,75 @@ const NotesAsList = function ({ notes, displayNote, setDisplayNote }) {
             No notes available
           </div>
         ) : (
-
           notes.map((note) => {
+            const handleMouseEnter = () => {
+
+              if (!clicked[note._id]) {
+                setIsHovered((prevState) => ({
+                  ...prevState,
+                  [note._id] : true
+                }))
+              } else {
+                setIsHovered((prevState) => ({
+                  ...prevState,
+                  [note._id] : false
+                }))
+              }
+              
+            };
+          
+            const handleMouseLeave = () => {
+              if (!clicked[note._id]) {
+                setIsHovered((prevState) => ({
+                  ...prevState,
+                  [note._id] : false
+                }))
+              }
+            };
 
             return (
-
               <div
                 key={note._id}
-                onClick={(e) => setNote({e, id: note._id})}
-                style={{backgroundColor: `${clicked[`${note._id}`] ? avThumbnailColors[note._id] : null}`}}
-                className={`transition-all cursor-pointer duration-500 flex gap-4 rounded-2xl py-6 px-5 mb-4 ${clicked ? "bg-p-grey hover:bg-gray-200" : null}`}
+                onClick={(e) => setNote({ e, id: note._id })}
+                style={{ 
+                  backgroundColor: `${!isHovered[note._id] ? (!clicked[note._id] ? "rgb(246 247 249)" /* Normal Color when not cliked or hovered */ : avThumbnailColors[note._id]) : (clicked[note._id] ? avThumbnailColors[note._id] : "rgb(229 231 235" /* Hover color */) }`, // This code is ass but it works anyway. Goodluck refactoring later
+                }}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                className={`transition-all cursor-pointer duration-500 flex gap-4 rounded-2xl py-6 px-5 mb-4`}
               >
-
-                <div
-                  className={`${baseThumbnailDivStyle}
-                  }]`}
-                >
-
-                  {/* Use individual color */}
+                <div className={`${baseThumbnailDivStyle}`}>
                   <img
                     src={note.thumbnail || "/assets/images/testt2.png"}
                     className="bg-cover w-[100%] rounded-2xl"
                     alt="Notes thumbnail"
                     ref={(el) => (thumbnailElems.current[note.id] = el)} // Store ref with note ID
                     onLoad={() => {
+                      let lightened;
                       if (thumbnailElems.current[note.id]) {
                         fac
                           .getColorAsync(thumbnailElems.current[note.id])
                           .then((color) => {
-                            const lightened = chroma(color.hex).brighten().hex();
-                            
+                            lightened = chroma(
+                              chroma(color.hex).brighten().hex()
+                            )
+                              .brighten()
+                              .hex();
+
                             setAvThumbnailColors((prevColors) => ({
                               ...prevColors,
-                              [note._id]: (chroma(lightened).brighten().hex()),
-                            }))
-                      })
+                              [note._id]: lightened,
+                            }));
+                          })
                           .catch((err) => console.error(err));
                       }
+
+                      // setBackgroundColor(note.id, lightened);
                     }}
                   />
                 </div>
 
-                <article 
-                className="flex flex-col gap-2 max-w-[65%]"
-                
-                >
+                <article className="flex flex-col gap-2 max-w-[65%]">
                   <h2 className="font-bold text-xl text-ellipsis overflow-hidden whitespace-nowrap">
                     {note?.title}
                   </h2>
@@ -115,8 +140,6 @@ const NotesAsList = function ({ notes, displayNote, setDisplayNote }) {
 };
 
 const NotesList = function ({ notes, displayNote, setDisplayNote }) {
-
-
   return (
     <>
       <section className="rounded-[34px] bg-white px-6 pt-8 pb-4 flex-1">
@@ -129,15 +152,18 @@ const NotesList = function ({ notes, displayNote, setDisplayNote }) {
           <span className="text-lg">
             {notes.length} Note{`${notes.length > 1 ? "s" : ""}`}
           </span>
-          
+
           <div className="relative p-0">
             <FilterDropdown />
           </div>
-          
         </div>
 
         {/* Here, we shall map the content in accordance with the number of notes existing. Let's build the UI components first */}
-        <NotesAsList notes={notes} displayNote={displayNote} setDisplayNote={setDisplayNote} />
+        <NotesAsList
+          notes={notes}
+          displayNote={displayNote}
+          setDisplayNote={setDisplayNote}
+        />
       </section>
     </>
   );

@@ -1,6 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/**/*.html"],
+  safelist: [
+    {
+      pattern: /^bg-/,
+      variants: ['hover', 'focus'],
+    },
+    {
+     pattern: /^text-/,
+    },
+     {
+     pattern: /^border-/, 
+    },
+  ],
   theme: {
     extend: {
       colors: {
