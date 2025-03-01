@@ -1,16 +1,19 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import DisplayNote from "./displaynote";
 import NotesList from "./noteslist";
 
 
-const mainDashboard = function ({ notes }) {
+const MainDashboard = function ({ notes }) {
+    const [displayNote, setDisplayNote] = useState();
+
     return (
         <main className="pt-10 m-auto grid grid-cols-1 gap-4 md:grid-cols-2 max-w-[85%]">
-            <NotesList notes={notes}/>
+            <NotesList notes={notes} displayNote={displayNote} setDisplayNote={setDisplayNote} />
+
             <DisplayNote notes={notes} />
         </main>
     )
 }
 
 
-export default mainDashboard
+export default MainDashboard

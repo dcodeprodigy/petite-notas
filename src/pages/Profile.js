@@ -6,7 +6,6 @@ const Profile = () => {
       user?.fName.endsWith("s") ? "'" : "'s"
     } Profile - P. Notas`;
   }, [user?.fName]);
-
   return <></>;
 };
 

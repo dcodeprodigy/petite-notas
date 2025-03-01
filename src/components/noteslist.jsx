@@ -1,63 +1,96 @@
-import { List } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
-import { IoFilterOutline } from "react-icons/io5";
-import { FastAverageColor } from 'fast-average-color';
+import { FastAverageColor } from "fast-average-color";
+import chroma from "chroma-js";
 import readingTime from "../utilis/reading-time-calc";
+import FilterDropdown from "./filterdropdown";
 
 const fac = new FastAverageColor();
 
-const NotesAsList = function ({ notes }) {
+const NotesAsList = function ({ notes, displayNote, setDisplayNote }) {
   const [avThumbnailColors, setAvThumbnailColors] = useState({}); // Store colors by note ID
   const thumbnailElems = useRef({}); // Store refs by note ID
-  const baseThumbnailDivStyle = " flex flex-1 justify-center items-center bg-btn-blue rounded-[18px] ";
+  const baseThumbnailDivStyle =
+    "flex flex-1 justify-center items-center rounded-[18px]";
+  const [clicked, setClicked] = useState({});
 
-  useEffect(() => {
-    // Calculate colors for  all notes when the component mounts or notes change
-    notes.forEach(note => {
-      const calculateColor = async () => {
-        if (thumbnailElems.current[note.id]) {
-          try {
-            const color = await fac.getColorAsync(thumbnailElems.current[note.id]);
-            setAvThumbnailColors(prevColors => ({ ...prevColors, [note.id]: color.hex }));
-          } catch (error) {
-            console.error("Error getting average color:", error);
-            setAvThumbnailColors(prevColors => ({ ...prevColors, [note.id]: '#FFFFFF' })); // Default color
-          }
-        }
-      };
-      calculateColor();
-    });
-  }, [notes]);
+  const setNote = async ({e, id}) => {
+    // Open or CLose the Note
+    const element = e.target;
+    console.log(id, element.className);
+    
+    setClicked((prevState) => {
+      const newClicked = { ...prevState };
+      Object.keys(newClicked).forEach(key => {
+        if (key !== id) newClicked[key] = false; // Set all others to false
+      })
+      newClicked[id] = !prevState[id]; // Toggle value of clicked one
+
+      return newClicked;
+    })
+
+    /* 
+    Get the element and style it accordingly
+    1. Check current state of the displaye note div 
+    2. Open if Closed
+    3. Close if Open
+    */
+  }
+
+  
 
   return (
     <>
       <section>
         {notes.length === 0 ? (
-          <div className="flex justify-center items-center h-[200px] text-xl font-semibold text-t-grey">No notes available</div>
+          <div className="flex justify-center items-center h-[200px] text-xl font-semibold text-black">
+            No notes available
+          </div>
         ) : (
-          notes.map(note => {
+
+          notes.map((note) => {
+
             return (
+
               <div
-                key={note.id}
-                className="flex gap-4 bg-p-grey rounded-2xl py-6 px-5 mb-4"
+                key={note._id}
+                onClick={(e) => setNote({e, id: note._id})}
+                style={{backgroundColor: `${clicked[`${note._id}`] ? avThumbnailColors[note._id] : null}`}}
+                className={`transition-all cursor-pointer duration-500 flex gap-4 rounded-2xl py-6 px-5 mb-4 ${clicked ? "bg-p-grey hover:bg-gray-200" : null}`}
               >
-                <div className={`${baseThumbnailDivStyle}  bg-[${avThumbnailColors[note.id] || '#FFFFFF'}]`}> {/* Use individual color */}
+
+                <div
+                  className={`${baseThumbnailDivStyle}
+                  }]`}
+                >
+
+                  {/* Use individual color */}
                   <img
-                    src={note.thumbnail || "/assets/images/testimg.jpg"}
-                    className="bg-contain w-[100%]"
+                    src={note.thumbnail || "/assets/images/testt2.png"}
+                    className="bg-cover w-[100%] rounded-2xl"
                     alt="Notes thumbnail"
-                    ref={el => (thumbnailElems.current[note.id] = el)} // Store ref with note ID
+                    ref={(el) => (thumbnailElems.current[note.id] = el)} // Store ref with note ID
                     onLoad={() => {
                       if (thumbnailElems.current[note.id]) {
-                        fac.getColorAsync(thumbnailElems.current[note.id])
-                          .then(color => setAvThumbnailColors(prevColors => ({...prevColors, [note.id]:color.hex})))
-                          .catch(err => console.error(err));
+                        fac
+                          .getColorAsync(thumbnailElems.current[note.id])
+                          .then((color) => {
+                            const lightened = chroma(color.hex).brighten().hex();
+                            
+                            setAvThumbnailColors((prevColors) => ({
+                              ...prevColors,
+                              [note._id]: (chroma(lightened).brighten().hex()),
+                            }))
+                      })
+                          .catch((err) => console.error(err));
                       }
                     }}
                   />
                 </div>
 
-                <article className="flex flex-col gap-2 max-w-[65%]">
+                <article 
+                className="flex flex-col gap-2 max-w-[65%]"
+                
+                >
                   <h2 className="font-bold text-xl text-ellipsis overflow-hidden whitespace-nowrap">
                     {note?.title}
                   </h2>
@@ -65,7 +98,7 @@ const NotesAsList = function ({ notes }) {
                     {note?.content}
                   </p>
 
-                  <div className="flex flex-1 items-center gap-2 text-t-grey font-medium text-[10px] pt-2">
+                  <div className="flex flex-1 items-center gap-2 text-black font-medium text-[10px] pt-2">
                     <span className="py-1 px-2 rounded-2xl bg-white shadow-sm">
                       {readingTime(note?.content)} mins
                     </span>
@@ -81,12 +114,8 @@ const NotesAsList = function ({ notes }) {
   );
 };
 
-const NotesList = function ({ notes }) {
-  const filterIcon = (
-    <IoFilterOutline
-      style={{ fontSize: "2rem", color: "#131316", cursor: "pointer" }}
-    />
-  );
+const NotesList = function ({ notes, displayNote, setDisplayNote }) {
+
 
   return (
     <>
@@ -97,12 +126,18 @@ const NotesList = function ({ notes }) {
         </div>
 
         <div className="flex justify-between items-center px-1 mt-6 text-btn-blue font-semibold text-md mb-8">
-          <span className="text-lg">{notes.length} Notes</span>
-          {filterIcon}
+          <span className="text-lg">
+            {notes.length} Note{`${notes.length > 1 ? "s" : ""}`}
+          </span>
+          
+          <div className="relative p-0">
+            <FilterDropdown />
+          </div>
+          
         </div>
 
         {/* Here, we shall map the content in accordance with the number of notes existing. Let's build the UI components first */}
-        <NotesAsList notes={notes} />
+        <NotesAsList notes={notes} displayNote={displayNote} setDisplayNote={setDisplayNote} />
       </section>
     </>
   );

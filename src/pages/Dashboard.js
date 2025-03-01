@@ -18,7 +18,6 @@ const Dashboard = () => {
               "content": "This brief provides a high-level overview of the project. Please review it carefully. Key areas requiring particular attention include:Timeline: The proposed timeline is aggressive. We need to confirm resource availability to meet these deadlines.Budget: The budget is preliminary. A more detailed cost breakdown is required before final approval.Stakeholder Alignment: Ensure all listed stakeholders are aware of the project goals and their roles. Gather any initial feedback.Next Steps: The project kickoff meeting is scheduled for [Date] at [Time]. Please come prepared to discuss your initial thoughts and any potential roadblocks. Your input is crucial at this early stage. A list of the required attendes has been attached below. Regards",
               "createdAt": "2025-02-10T10:51:14.684Z",
               "updatedAt": "2025-02-10T10:51:14.684Z",
-              "readTime" : "4 mins",
               "__v": 0
           },
           {

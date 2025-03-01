@@ -7,6 +7,7 @@ const DisplayNote = function ({ notes, todos }) {
     <>
       {/* This displays an open note */}
       <section className=" flex flex-col flex-1 gap-4">
+        
         <div className="flex flex-col bg-white px-6 py-8 rounded-[34px] sticky top-0">
           <div className="flex justify-between mb-4 gap-[calc(3%/2)] items-center">
             <div className="p-1 flex justify-center items-center bg-btn-blue rounded-lg max-w-[10%]">
@@ -42,9 +43,9 @@ const DisplayNote = function ({ notes, todos }) {
           </article>
         </div>
 
-        <div className="flex flex-col gap-4">
+        {/* <div className="flex flex-col gap-4">
           <Todos todos={todos} />
-        </div>
+        </div> */}
       </section>
     </>
   );
