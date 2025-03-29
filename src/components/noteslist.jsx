@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { FastAverageColor } from "fast-average-color";
 import chroma from "chroma-js";
-import readingTime from "../utilis/reading-time-calc";
+import readingTime from "../utilis/ReadingTimeCalc";
 import FilterDropdown from "./filterdropdown";
 
 const fac = new FastAverageColor();
@@ -43,7 +43,7 @@ const NotesAsList = function ({ notes, displayNote, setDisplayNote }) {
     <>
       <section>
         {notes.length === 0 ? (
-          <div className="flex justify-center items-center h-[200px] text-xl font-semibold text-black">
+          <div className="flex justify-center items-center h-[200px] text-xl font-semibold text-black transition-all  duration-500">
             No notes available
           </div>
         ) : (
@@ -70,6 +70,11 @@ const NotesAsList = function ({ notes, displayNote, setDisplayNote }) {
                   ...prevState,
                   [note._id] : false
                 }))
+              } else {
+                setIsHovered((prevState) => ({
+                  ...prevState,
+                  [note._id]: true
+                }))
               }
             };
 
@@ -78,7 +83,7 @@ const NotesAsList = function ({ notes, displayNote, setDisplayNote }) {
                 key={note._id}
                 onClick={(e) => setNote({ e, id: note._id })}
                 style={{ 
-                  backgroundColor: `${!isHovered[note._id] ? (!clicked[note._id] ? "rgb(246 247 249)" /* Normal Color when not cliked or hovered */ : avThumbnailColors[note._id]) : (clicked[note._id] ? avThumbnailColors[note._id] : "rgb(229 231 235" /* Hover color */) }`, // This code is ass but it works anyway. Goodluck refactoring later
+                  backgroundColor: `${!isHovered[note._id] ? (!clicked[note._id] ? "rgb(246 247 249)" /* Normal Color when not cliked or hovered */ : avThumbnailColors[note._id]["onClick"]) : (clicked[note._id] ? avThumbnailColors[note._id]["onClick"] : avThumbnailColors[note._id]["onHover"] /* Hover color */) }`, // This code is ass but it works anyway. Goodluck refactoring later
                 }}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
@@ -91,20 +96,21 @@ const NotesAsList = function ({ notes, displayNote, setDisplayNote }) {
                     alt="Notes thumbnail"
                     ref={(el) => (thumbnailElems.current[note.id] = el)} // Store ref with note ID
                     onLoad={() => {
-                      let lightened;
+                      let [onClick, onHover] = "";
                       if (thumbnailElems.current[note.id]) {
                         fac
                           .getColorAsync(thumbnailElems.current[note.id])
                           .then((color) => {
-                            lightened = chroma(
+                            onClick = chroma(
                               chroma(color.hex).brighten().hex()
                             )
                               .brighten()
                               .hex();
+                              onHover = chroma(onClick).brighten().hex();
 
                             setAvThumbnailColors((prevColors) => ({
                               ...prevColors,
-                              [note._id]: lightened,
+                              [note._id]: {onClick: onClick, onHover: onHover},
                             }));
                           })
                           .catch((err) => console.error(err));
@@ -142,7 +148,7 @@ const NotesAsList = function ({ notes, displayNote, setDisplayNote }) {
 const NotesList = function ({ notes, displayNote, setDisplayNote }) {
   return (
     <>
-      <section className="rounded-[34px] bg-white px-6 pt-8 pb-4 flex-1">
+      <section className="rounded-[34px] bg-white px-6 pt-8 pb-4 flex-1 w-full">
         <div className="inline-flex justify-center items-center gap-3 font-semibold text-xl">
           <img src="/assets/images/note-icon.svg" alt="Notes" className="w-7" />
           <h3>All Notes</h3>
